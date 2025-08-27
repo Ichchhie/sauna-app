@@ -3,15 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sauna App</title>
+<title>Sauna Finder & Community</title>
 <style>
-  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
-  .center { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  :root {
+    --bg: #0b0f14;
+    --card: #11161d;
+    --muted: #90a4ae;
+    --text: #e6edf3;
+    --accent: #ff7a59;
+    --accent-2: #ffb703;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
+  a { color: inherit; text-decoration: none; }
+  .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+  /* Nav */
+  .nav { position: fixed; top: 0; left: 0; right: 0; backdrop-filter: blur(8px); background: rgba(11,15,20,0.6); border-bottom: 1px solid rgba(255,255,255,0.06); z-index: 10; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 0.3px; }
+  .logo-mark { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 8px 24px rgba(255, 122, 89, 0.35); }
+  .nav-links { display: none; gap: 18px; color: var(--muted); }
+  .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff6a00); color: #101418; font-weight: 600; box-shadow: 0 10px 22px rgba(255, 122, 89, 0.35); }
+
+  /* Hero */
+  .hero { position: relative; padding-top: 92px; }
+  .hero-media { position: relative; width: 100%; height: 72vh; min-height: 520px; overflow: hidden; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; }
+  .hero-media::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.40) 0%, rgba(0,0,0,0.55) 45%, rgba(11,15,20,1) 100%); z-index: 1; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); filter: saturate(1.05) contrast(1.05); }
+  .hero-content { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; padding: 0 20px; text-align: center; }
+  .hero-inner { max-width: 900px; }
+  .eyebrow { display: inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,0.08); color: var(--muted); font-size: 13px; letter-spacing: 0.3px; backdrop-filter: blur(6px); }
+  h1 { margin: 14px 0 12px; font-size: clamp(36px, 5vw, 56px); line-height: 1.05; }
+  .sub { margin: 0 auto 22px; max-width: 720px; color: var(--muted); font-size: clamp(16px, 2vw, 18px); line-height: 1.6; }
+  .actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); color: var(--text); }
+  .btn.primary { background: linear-gradient(135deg, var(--accent), #ff6a00); color: #101418; border-color: transparent; }
+
+  /* Features */
+  .section { padding: 56px 0; }
+  .section h2 { font-size: clamp(24px, 3.5vw, 36px); margin: 0 0 8px; }
+  .section p.lead { color: var(--muted); margin: 0 0 28px; }
+  .grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; }
+  .card { background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+  .card h3 { margin: 6px 0 6px; font-size: 18px; }
+  .card p { margin: 0; color: var(--muted); }
+
+  /* Discovery layout */
+  .discovery { padding: 40px 0 64px; }
+  .filters { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+  .input, .select { width: 100%; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text); }
+  .split { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .panel { background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; }
+  .list { padding: 12px; }
+  .list .item { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); align-items: center; }
+  .list .item + .item { margin-top: 10px; }
+  .thumb { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,0.08); color: var(--muted); font-size: 12px; }
+  .price { font-weight: 700; }
+  .map { position: relative; min-height: 420px; overflow: hidden; }
+  .map .board { position: relative; height: 100%; border-radius: 16px; padding: 12px; background: radial-gradient(1200px 300px at 10% 10%, rgba(255,255,255,0.04), rgba(255,255,255,0.015)); border: 1px solid rgba(255,255,255,0.06); }
+  .marker { position: absolute; transform: translate(-50%, -100%); background: linear-gradient(135deg, var(--accent), #ff6a00); color: #101418; font-size: 12px; font-weight: 700; padding: 6px 8px; border-radius: 8px; box-shadow: 0 6px 16px rgba(255,122,89,0.35); cursor: pointer; }
+
+  /* Modal */
+  .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); z-index: 20; padding: 20px; }
+  .modal.open { display: flex; }
+  .modal-card { width: 100%; max-width: 560px; background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; }
+  .modal-media { width: 100%; height: 220px; object-fit: cover; }
+  .modal-body { padding: 16px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 0 16px 16px; }
+
+  /* Footer */
+  .footer { padding: 28px 0; color: var(--muted); border-top: 1px solid rgba(255,255,255,0.06); }
+
+  /* Responsive */
+  @media (min-width: 720px) {
+    .nav-links { display: flex; }
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { padding: 20px; }
+    .filters { grid-template-columns: 2fr 1fr 1fr; }
+    .split { grid-template-columns: 1.2fr 1fr; }
+  }
 </style>
 </head>
 <body>
-<div class="center">
-  <h1>Hello Sauna Lovers</h1>
-</div>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <span>Sauna Finder</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#discover">Discover</a>
+        <a href="#book">Book</a>
+        <a href="#community">Community</a>
+        <a href="#about">About</a>
+      </nav>
+      <a class="cta" href="#get-started">Get started</a>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-media">
+      <img class="hero-img" alt="Finnish sauna by a lakeside in winter with steam rising" src="https://images.unsplash.com/photo-1544989164-31dc3c645987?q=80&w=1974&auto=format&fit=crop" />
+      <div class="hero-content">
+        <div class="hero-inner">
+          <span class="eyebrow">Sauna culture in Finland</span>
+          <h1>Find heat. Book bliss. Meet your sauna people.</h1>
+          <p class="sub">Discover public saunas, book private sessions, and connect with enthusiasts around the world. Built for the rituals of heat, steam, and community.</p>
+          <div class="actions">
+            <a class="btn primary" href="#discover">Explore saunas</a>
+            <a class="btn" href="#community">Join the community</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container discovery" id="discover">
+    <h2>Discover saunas</h2>
+    <p class="lead">Search by city, type, and price to find your next session.</p>
+
+    <div class="filters">
+      <input id="filter-city" class="input" type="text" placeholder="City (e.g., Helsinki)" />
+      <select id="filter-type" class="select">
+        <option value="">Any type</option>
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+        <option value="smoke">Smoke sauna</option>
+        <option value="wood">Wood-fired</option>
+        <option value="electric">Electric</option>
+      </select>
+      <select id="filter-price" class="select">
+        <option value="">Any price</option>
+        <option value="$">$</option>
+        <option value="$$">$$</option>
+        <option value="$$$">$$$</option>
+      </select>
+    </div>
+
+    <div class="split">
+      <div class="panel list" id="list"></div>
+      <div class="panel map">
+        <div class="board" id="map-board" aria-label="Map placeholder"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <span>© <span id="year"></span> Sauna Finder • Made with löyly</span>
+    </div>
+  </footer>
+
+  <div class="modal" id="modal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <img class="modal-media" id="modal-img" alt="Sauna photo" />
+      <div class="modal-body">
+        <h3 id="modal-title"></h3>
+        <p class="meta" id="modal-meta"></p>
+        <p id="modal-desc"></p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="modal-close">Close</button>
+        <a class="btn primary" id="modal-book" href="#book">Request booking</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Static dataset (sample)
+    const saunas = [
+      { id: 's1', name: 'Lakeside Löyly', city: 'Helsinki', type: 'public', price: '$$', rating: 4.7, lat: 60.1699, lng: 24.9384, img: 'https://images.unsplash.com/photo-1544989164-31dc3c645987?q=80&w=800&auto=format&fit=crop', desc: 'Modern public sauna with sea views and a beautiful terrace. Wood-fired heat and cold plunge access.' },
+      { id: 's2', name: 'Kallio Smoke Sauna', city: 'Helsinki', type: 'smoke', price: '$$$', rating: 4.9, lat: 60.1870, lng: 24.9620, img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop', desc: 'Traditional smoke sauna in the heart of the city. Deep heat, dim light, and a relaxed vibe.' },
+      { id: 's3', name: 'Tampere Public Baths', city: 'Tampere', type: 'public', price: '$', rating: 4.4, lat: 61.4991, lng: 23.7871, img: 'https://images.unsplash.com/photo-1523875194681-bedd468c58bf?q=80&w=800&auto=format&fit=crop', desc: 'Affordable lakeside saunas with easy access and family-friendly sessions.' },
+      { id: 's4', name: 'Aurora Private Sauna', city: 'Rovaniemi', type: 'private', price: '$$$', rating: 4.8, lat: 66.5039, lng: 25.7294, img: 'https://images.unsplash.com/photo-1512295767273-ac109ac3acfa?q=80&w=800&auto=format&fit=crop', desc: 'Private glass-front sauna perfect for northern lights viewing. Optional ice dip.' },
+      { id: 's5', name: 'Harbor Heat', city: 'Turku', type: 'wood', price: '$$', rating: 4.5, lat: 60.4518, lng: 22.2666, img: 'https://images.unsplash.com/photo-1519682337058-a94d519337bc?q=80&w=800&auto=format&fit=crop', desc: 'Cozy wood-fired sauna near the harbor. Calm evenings with soft löyly.' }
+    ];
+
+    // Elements
+    const listEl = document.getElementById('list');
+    const mapBoard = document.getElementById('map-board');
+    const filterCity = document.getElementById('filter-city');
+    const filterType = document.getElementById('filter-type');
+    const filterPrice = document.getElementById('filter-price');
+
+    // Modal elements
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMeta = document.getElementById('modal-meta');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalClose = document.getElementById('modal-close');
+
+    function closeModal() { modal.classList.remove('open'); }
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    modalClose.addEventListener('click', closeModal);
+
+    // Filtering
+    function applyFilters(items) {
+      const city = filterCity.value.trim().toLowerCase();
+      const type = filterType.value;
+      const price = filterPrice.value;
+      return items.filter(s => {
+        if (city && !s.city.toLowerCase().includes(city)) return false;
+        if (type && s.type !== type) return false;
+        if (price && s.price !== price) return false;
+        return true;
+      });
+    }
+
+    filterCity.addEventListener('input', render);
+    filterType.addEventListener('change', render);
+    filterPrice.addEventListener('change', render);
+
+    // List rendering
+    function renderList(items) {
+      if (!items.length) {
+        listEl.innerHTML = '<div class="card" style="padding:16px;">No results. Try broadening your filters.</div>';
+        return;
+      }
+      listEl.innerHTML = items.map(s => `
+        <div class="item" data-id="${s.id}">
+          <img class="thumb" src="${s.img}" alt="${s.name}" />
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <strong>${s.name}</strong>
+              <span class="badge">${s.city}</span>
+            </div>
+            <div class="meta">${s.type} • <span class="price">${s.price}</span> • ★ ${s.rating}</div>
+          </div>
+          <button class="btn" data-open="${s.id}">Details</button>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('[data-open]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.currentTarget.getAttribute('data-open');
+          const s = saunas.find(x => x.id === id);
+          if (!s) return;
+          modalImg.src = s.img;
+          modalTitle.textContent = s.name;
+          modalMeta.textContent = `${s.city} • ${s.type} • ${s.price} • ★ ${s.rating}`;
+          modalDesc.textContent = s.desc;
+          modal.classList.add('open');
+        });
+      });
+    }
+
+    // Simple map placeholder with relative markers (normalized Finland bounds)
+    const bounds = { minLat: 59.5, maxLat: 70.0, minLng: 20.0, maxLng: 31.6 };
+    function project(lat, lng) {
+      const x = (lng - bounds.minLng) / (bounds.maxLng - bounds.minLng) * 100;
+      const y = (1 - (lat - bounds.minLat) / (bounds.maxLat - bounds.minLat)) * 100;
+      return { x, y };
+    }
+
+    function renderMap(items) {
+      mapBoard.innerHTML = '';
+      items.forEach(s => {
+        const { x, y } = project(s.lat, s.lng);
+        const m = document.createElement('div');
+        m.className = 'marker';
+        m.style.left = x + '%';
+        m.style.top = y + '%';
+        m.textContent = '★ ' + s.price;
+        m.title = s.name + ' — ' + s.city;
+        m.addEventListener('click', () => {
+          modalImg.src = s.img;
+          modalTitle.textContent = s.name;
+          modalMeta.textContent = `${s.city} • ${s.type} • ${s.price} • ★ ${s.rating}`;
+          modalDesc.textContent = s.desc;
+          modal.classList.add('open');
+        });
+        mapBoard.appendChild(m);
+      });
+    }
+
+    function render() {
+      const filtered = applyFilters(saunas);
+      renderList(filtered);
+      renderMap(filtered);
+    }
+
+    render();
+  </script>
 </body>
 </html>
