@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors/IDE
+.vscode/
+.idea/
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+mapbox_token.txt
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build artifacts (if added later)
+dist/
+build/
+.out/
+.cache/
