@@ -7,15 +7,29 @@
 <title>Sauna Finder & Community</title>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
 <link href="styles.css" rel="stylesheet" />
+<meta name="description" content="Discover and book saunas around Helsinki. Browse iconic spots like Löyly, Allas Sea Pool, and Lonna, and connect with the sauna community." />
+<meta name="keywords" content="sauna, Helsinki saunas, book sauna, Finnish sauna culture, löyly" />
+<meta name="theme-color" content="#ff7a59" />
+<link rel="canonical" href="/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Sauna Finder & Community" />
+<meta property="og:description" content="Discover and book saunas around Helsinki. Explore maps, photos, and real reviews." />
+<meta property="og:image" content="assets/hero-loyly.jpg" />
+<meta property="og:site_name" content="Sauna Finder" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Sauna Finder & Community" />
+<meta name="twitter:description" content="Find heat. Book bliss. Meet your sauna people." />
+<meta name="twitter:image" content="assets/hero-loyly.jpg" />
 </head>
 <body>
-  <header class="nav">
+  <a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Skip to content</a>
+  <header class="nav" role="banner">
     <div class="container nav-inner">
       <div class="logo">
-        <div class="logo-mark"></div>
+        <div class="logo-mark" aria-hidden="true"></div>
         <span>Sauna Finder</span>
       </div>
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="Primary">
         <a href="#spots">Spots</a>
         <a href="#discover">Discover</a>
         <a href="#community">Community</a>
@@ -24,6 +38,7 @@
     </div>
   </header>
 
+  <main id="main-content" tabindex="-1">
   <section class="hero" id="home">
     <div class="container">
       <div class="hero-card" aria-label="Hero">
@@ -41,16 +56,17 @@
             </div>
           </div>
         </div>
+        <div class="hero-credit">Credit: Ulla Mäkelä</div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="spots">
+  <section class="section" id="spots" aria-labelledby="spots-heading">
     <div class="container">
-      <h2>Featured Helsinki saunas</h2>
+      <h2 id="spots-heading">Featured Helsinki saunas</h2>
       <p class="lead">Curated highlights from the Helsinki region.</p>
-      <div class="grid" id="spot-grid">
-        <article class="spot">
+      <div class="grid" id="spot-grid" role="list">
+        <article class="spot" role="listitem">
           <img src="assets/allas-sea-pool.jpg" alt="Swimmers at Allas Sea Pool by Helsinki harbor" />
           <div class="spot-body">
             <div class="spot-title">
@@ -58,9 +74,10 @@
               <span class="badge">Harbor • Public</span>
             </div>
             <div class="meta">Warm and cold pools, year-round sauna next to the sea.</div>
+            <div class="credit-note">Credit: Julia Kivelä</div>
           </div>
         </article>
-        <article class="spot">
+        <article class="spot" role="listitem">
           <img src="assets/sipoonjoki-traditional.jpg" alt="Rustic smoke sauna entrance at Sipoonjoki in the forest" />
           <div class="spot-body">
             <div class="spot-title">
@@ -68,9 +85,10 @@
               <span class="badge">Smoke • Countryside</span>
             </div>
             <div class="meta">Authentic smoke sauna experience immersed in nature.</div>
+            <div class="credit-note">Credit: Sipoonjoki Heritage Sauna</div>
           </div>
         </article>
-        <article class="spot">
+        <article class="spot" role="listitem">
           <img src="assets/lonna-terrace.jpg" alt="People relaxing on Lonna island sauna terrace by the sea" />
           <div class="spot-body">
             <div class="spot-title">
@@ -78,6 +96,7 @@
               <span class="badge">Island • Wood-fired</span>
             </div>
             <div class="meta">Modern island saunas with traditional stoves and sea views.</div>
+            <div class="credit-note">Credit: André Alexander Baumann / OOPEAA</div>
           </div>
         </article>
       </div>
@@ -85,12 +104,14 @@
     </div>
   </section>
 
-  <section class="section container discovery" id="discover">
-    <h2>Discover saunas</h2>
+  <section class="section container discovery" id="discover" aria-labelledby="discover-heading">
+    <h2 id="discover-heading">Discover saunas</h2>
     <p class="lead">Search by city, type, and price to find your next session.</p>
 
-    <div class="filters">
+    <form class="filters" role="search" aria-label="Filter saunas">
+      <label class="visually-hidden" for="filter-city">City</label>
       <input id="filter-city" class="input" type="text" placeholder="City (e.g., Helsinki)" />
+      <label class="visually-hidden" for="filter-type">Type</label>
       <select id="filter-type" class="select">
         <option value="">Any type</option>
         <option value="public">Public</option>
@@ -99,16 +120,17 @@
         <option value="wood">Wood-fired</option>
         <option value="electric">Electric</option>
       </select>
+      <label class="visually-hidden" for="filter-price">Price</label>
       <select id="filter-price" class="select">
         <option value="">Any price</option>
         <option value="$">$</option>
         <option value="$$">$$</option>
         <option value="$$$">$$$</option>
       </select>
-    </div>
+    </form>
 
     <div class="split">
-      <div class="panel list" id="list"></div>
+      <div class="panel list" id="list" aria-live="polite" aria-busy="false"></div>
       <div class="panel map">
         <div class="board" id="map-board" aria-label="Map placeholder">
           <div id="mapbox" class="mapbox" role="region" aria-label="Map"></div>
@@ -116,8 +138,9 @@
       </div>
     </div>
   </section>
+  </main>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="container">
       <span>© <span id="year"></span> Sauna Finder • Images © respective owners</span>
     </div>
@@ -132,19 +155,41 @@
         <p id="modal-desc"></p>
       </div>
       <div class="modal-actions">
-        <button class="btn" id="modal-close">Close</button>
+        <button class="btn" id="modal-close" type="button">Close</button>
         <a class="btn primary" id="modal-book" href="#book">Request booking</a>
       </div>
     </div>
   </div>
 
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+  <script src="config.js" defer></script>
   <script>
     // Year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Mapbox token configuration - replace with your token
-    const MAPBOX_TOKEN = window.localStorage.getItem('MAPBOX_TOKEN') || 'YOUR_MAPBOX_ACCESS_TOKEN';
+    // Mapbox token configuration (priority): config.js -> .env (localhost only) -> localStorage -> placeholder
+    let MAPBOX_TOKEN = (window.__APP_CONFIG__ && window.__APP_CONFIG__.MAPBOX_TOKEN) || window.localStorage.getItem('MAPBOX_TOKEN') || 'YOUR_MAPBOX_ACCESS_TOKEN';
+
+    async function readDotEnvIfLocal() {
+      const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      if (!isLocal) return {};
+      try {
+        const res = await fetch('/.env', { cache: 'no-store' });
+        if (!res.ok) return {};
+        const text = await res.text();
+        const env = {};
+        text.split('\n').forEach(line => {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith('#')) return;
+          const eq = trimmed.indexOf('=');
+          if (eq === -1) return;
+          const key = trimmed.slice(0, eq).trim();
+          const value = trimmed.slice(eq + 1).trim().replace(/^"|"$/g, '');
+          env[key] = value;
+        });
+        return env;
+      } catch (e) { return {}; }
+    }
 
     // Dataset (Helsinki highlights) with assets/ images
     const saunas = [
@@ -283,7 +328,7 @@
         return;
       }
       listEl.innerHTML = items.map(s => `
-        <div class=\"item\" data-id=\"${s.id}\">\n          <img class=\"thumb\" src=\"${s.img}\" alt=\"${s.name}\" />\n          <div>\n            <div style=\"display:flex; align-items:center; gap:8px;\">\n              <strong>${s.name}</strong>\n              <span class=\"badge\">${s.city}</span>\n            </div>\n            <div class=\"meta\">${s.type} • <span class=\"price\">${s.price}</span> • ★ ${s.rating}</div>\n          </div>\n          <button class=\"btn\" data-open=\"${s.id}\">Details</button>\n        </div>
+        <div class=\"item\" data-id=\"${s.id}\">\n          <img class=\"thumb\" src=\"${s.img}\" alt=\"${s.name}\" />\n          <div>\n            <div style=\"display:flex; align-items:center; gap:8px;\">\n              <strong>${s.name}</strong>\n              <span class=\"badge\">${s.city}</span>\n            </div>\n            <div class=\"meta\">${s.type} • <span class=\"price\">${s.price}</span> • ★ ${s.rating}</div>\n          </div>\n          <button class=\"btn\" data-open=\"${s.id}\" type=\"button\">Details</button>\n        </div>
       `).join('');
 
       listEl.querySelectorAll('[data-open]').forEach(btn => {
@@ -307,7 +352,11 @@
       renderMap(filtered);
     }
 
-    render();
+    (async () => {
+      const env = await readDotEnvIfLocal();
+      if (env && env.MAPBOX_TOKEN) MAPBOX_TOKEN = env.MAPBOX_TOKEN;
+      render();
+    })();
   </script>
 </body>
 </html>

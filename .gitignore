@@ -16,6 +16,7 @@ Icon?
 .env.local
 .env.*.local
 mapbox_token.txt
+config.js
 
 # Logs
 npm-debug.log*
@@ -28,3 +29,4 @@ dist/
 build/
 .out/
 .cache/
+
